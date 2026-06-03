@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { UsersModule } from './users/user/user.module';
 import { MongooseModule } from '@nestjs/mongoose'; 
 import { ConfigModule } from '@nestjs/config';
+import { ChatGateway } from './chat/chat.gateway';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -16,7 +17,7 @@ import { ConfigModule } from '@nestjs/config';
   UsersModule,
 ],  
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, ChatGateway],
 })
 
 export class AppModule {}
