@@ -1,15 +1,40 @@
 import { OnModuleInit } from '@nestjs/common';
 import {
+  ConnectedSocket,
   MessageBody,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
 
-import { Server } from 'socket.io';
+import { Server, Socket } from 'socket.io';
+import { AiService } from '../ai/ai.service';
 
 @WebSocketGateway()
 export class ChatGateway implements OnModuleInit {
+
+constructor(
+  private readonly aiService: AiService,
+) {}
+
+@SubscribeMessage('askAI')
+async askAI(
+  @ConnectedSocket() client: Socket,
+  @MessageBody() message: string,
+) {
+  console.log(
+    'ASK AI FROM:',
+    client.id,
+  );
+
+  const response =
+    await this.aiService.ask(message);
+
+  client.emit(
+    'aiResponse',
+    response,
+  );
+}
 
   @WebSocketServer()
   server!: Server;
@@ -43,18 +68,9 @@ export class ChatGateway implements OnModuleInit {
   }
 
 @SubscribeMessage('sentSingleMessage')
-sentSingleMessage(
-  @MessageBody() data: any,
-) {
+sentSingleMessage(@MessageBody() data: any) {
 
-  console.log('Target:', data.targetClientID);
-
-  const socket =
-    this.server.sockets.sockets.get(
-      data.targetClientID,
-    );
-
-  console.log(socket?.id);
+  const socket =this.server.sockets.sockets.get(data.targetClientID);
 
   socket?.emit(
     'privateMessage',

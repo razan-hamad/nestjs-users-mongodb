@@ -5,6 +5,10 @@ import { UsersModule } from './users/user/user.module';
 import { MongooseModule } from '@nestjs/mongoose'; 
 import { ConfigModule } from '@nestjs/config';
 import { ChatGateway } from './chat/chat.gateway';
+import { AiService } from './ai/ai.service';
+import { AiModule } from './ai/ai.module';
+import { ChatModule } from './chat/chat.module';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -15,9 +19,11 @@ import { ChatGateway } from './chat/chat.gateway';
     process.env.MONGO_URI!,
   ),
   UsersModule,
+  AiModule,
+  ChatModule
 ],  
   controllers: [AppController],
-  providers: [AppService, ChatGateway],
+  providers: [AppService, ChatGateway, AiService],
 })
 
 export class AppModule {}
