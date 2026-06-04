@@ -49,6 +49,7 @@ async askAI(
     });
   }
 
+  // Handle incoming messages from clients
   @SubscribeMessage('message')
   handleMessage(
     client: any,
@@ -59,6 +60,7 @@ async askAI(
     return payload;
   }
 
+  // Handle broadcasting messages to all clients
   @SubscribeMessage('newSentMessage')
   newSentMessage(
     @MessageBody() message: string,
@@ -69,6 +71,7 @@ async askAI(
     );
   }
 
+  // Handle private messages
 @SubscribeMessage('sentSingleMessage')
 sentSingleMessage(@MessageBody() data: any) {
 
