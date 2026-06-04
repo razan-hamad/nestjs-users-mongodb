@@ -1,4 +1,4 @@
-import { OnModuleInit } from '@nestjs/common';
+import { NotFoundException, OnModuleInit } from '@nestjs/common';
 import {
   ConnectedSocket,
   MessageBody,
@@ -9,27 +9,29 @@ import {
 
 import { Server, Socket } from 'socket.io';
 import { AiService } from '../ai/ai.service';
+import { ConversationsService } from '../conversations/conversations.service';
 
 @WebSocketGateway()
 export class ChatGateway implements OnModuleInit {
 
 constructor(
   private readonly aiService: AiService,
+  private readonly conversationsService:
+    ConversationsService,
 ) {}
-
 @SubscribeMessage('askAI')
 async askAI(
   @ConnectedSocket() client: Socket,
   @MessageBody() message: string,
 ) {
-  console.log(
-    'ASK AI FROM:',
-    client.id,
-  );
 
-  const response =
-    await this.aiService.ask(message);
-
+  const response =await this.aiService.ask(message);
+  if(!response){
+   throw new NotFoundException(
+         'No response from AI',
+       );
+  }
+  await this.conversationsService.create(message,response);
   client.emit(
     'aiResponse',
     response,

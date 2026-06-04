@@ -8,6 +8,7 @@ import { ChatGateway } from './chat/chat.gateway';
 import { AiService } from './ai/ai.service';
 import { AiModule } from './ai/ai.module';
 import { ChatModule } from './chat/chat.module';
+import { ConversationsModule } from './conversations/conversations.module';
 
 @Module({
   imports: [
@@ -20,7 +21,8 @@ import { ChatModule } from './chat/chat.module';
   ),
   UsersModule,
   AiModule,
-  ChatModule
+  ChatModule,
+  ConversationsModule
 ],  
   controllers: [AppController],
   providers: [AppService, ChatGateway, AiService],
